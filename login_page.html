@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Login Page</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./assets/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+      <nav>
+        <ul>
+          <li><a href="/client/index.html">projets</a></li>
+          <li><a href="#contact">contact</a></li>
+          <li id="logSwitch">
+            <a id="loginSwitch" href="./login_page.html">login</a>
+          </li>
+          <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="login-page">
+      <div class="login-form-container">
+        <h2>Log in</h2>
+        <form class="login-form">
+          <label>E-mail</label>
+          <input id="emailField" type="email" name="email" />
+          <label>Mot de passe</label>
+          <input id="passwordField" type="password" name="password" />
+          <button>Se connecter</button>
+        </form>
+        <p><a>Mot de passe oublié</a></p>
+      </div>
+    </main>
+
+    <script src="login.js"></script>
+  </body>
+</html>
