@@ -1,27 +1,25 @@
-const email = document.querySelector("#emailField").value;
-
 const form = document.querySelector("form");
 
 form.addEventListener("submit", async (e) => {
   // sophie.bluel@test.tld
   // S0phie
   e.preventDefault();
-  const password = document.querySelector("#passwordField").value;
-  const email = document.querySelector("#emailField").value;
-  let user = {
-    email: email,
-    password: password,
+
+  const user = {
+    email: document.querySelector("#emailField").value,
+    password: document.querySelector("#passwordField").value,
   };
 
   let response = await fetch("http://localhost:5678/api/users/login", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json;charset=utf-8",
+      "Content-Type": "application/json",
+      Accept: "application/json",
     },
     body: JSON.stringify(user),
   });
-  let result = await response.json();
   if (response.ok) {
+    let result = await response.json();
     document.cookie = `access_token=${result.token}`;
     window.location.href = "/client/index.html";
   } else {
