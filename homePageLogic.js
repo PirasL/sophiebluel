@@ -9,29 +9,12 @@ if (document.cookie) {
   document.querySelector(".edit-banner").classList.add("opacity");
   loginSwitch.innerHTML = `<a>logout</a>`;
   loginSwitch.onclick = () => {
-    deleteAllCookies();
+    console.log(document.cookie);
+    document.cookie = "access_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     window.location.reload();
   };
 }
 
-function deleteAllCookies() {
-  document.cookie = "access_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-}
-
-function parseJwt(token) {
-  let base64Url = token.split(".")[1];
-  let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  let jsonPayload = decodeURIComponent(
-    window
-      .atob(base64)
-      .split("")
-      .map(function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join("")
-  );
-  return JSON.parse(jsonPayload);
-}
 // FETCH DATA
 fetch("http://localhost:5678/api/works")
   .then((response) => response.json())
