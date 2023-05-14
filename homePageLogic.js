@@ -19,13 +19,14 @@ if (document.cookie) {
 fetch("http://localhost:5678/api/works")
   .then((response) => response.json())
   .then((responseData) => {
-    const uniqueCategoriesName = [
+    const uniqueCategories = [
       ...new Set(responseData.map(({ category }) => category.name)),
     ];
-    buildFilter(uniqueCategoriesName, responseData);
+    console.log(responseData);
+    console.log(responseData.map(({ category }) => category.name));
+    buildFilter(uniqueCategories, responseData);
     buildGallery(responseData);
     buildModalGallery(responseData);
-
     data = responseData;
   })
   .catch((error) => console.warn(error));
@@ -66,14 +67,15 @@ function buildFilter(categories, responseData) {
   let itemFilter = document.querySelectorAll(".filter-item");
   itemFilter.forEach((item) => {
     item.addEventListener("click", (e) => {
-      let target =
-        e.target.textContent === "Tous" ? "hey" : e.target.textContent;
-      if (e.target.textContent === "Tous") {
+      itemFilter.forEach((el) => el.classList.remove("filter-active"));
+      e.target.classList.add("filter-active");
+      const target = e.target.innerText;
+      if (target === "Tous") {
         removeItem();
         buildGallery(responseData);
       } else {
         let filteredData = responseData.filter(
-          (item) => item.category.name === target
+          ({ category }) => category.name === target
         );
         removeItem();
         buildGallery(filteredData);
@@ -84,12 +86,12 @@ function buildFilter(categories, responseData) {
 // REMOVE EVERY ITEMS
 function removeItem() {
   let gallery = document.querySelector(".gallery");
-  gallery.querySelectorAll("figure").forEach((el) => {
-    el.remove();
+  gallery.querySelectorAll("figure").forEach((item) => {
+    item.remove();
   });
 }
 
-// SHOW/HIDE MODAL LOGIC
+// TOGGLE MODAL LOGIC
 const modal = document.querySelector("#modal");
 function showModal() {
   modal.style.display = "flex";

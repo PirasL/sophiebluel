@@ -247,8 +247,14 @@ header li a {
   align-items: center;
   font-size: 16px;
   font-weight: bold;
+  font-family: "Syne";
+  pointer: cursor;
 }
 
+.filter-active {
+  background: #1d6154;
+  color: white;
+}
 .gallery {
   width: 100%;
   display: grid;
