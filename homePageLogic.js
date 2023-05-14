@@ -19,8 +19,6 @@ fetch("http://localhost:5678/api/works")
     const uniqueCategories = [
       ...new Set(responseData.map(({ category }) => category.name)),
     ];
-    console.log(responseData);
-    console.log(responseData.map(({ category }) => category.name));
     buildFilter(uniqueCategories, responseData);
     buildGallery(responseData);
     buildModalGallery(responseData);
