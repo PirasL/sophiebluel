@@ -136,16 +136,22 @@ table {
 
 /** end reset css**/
 body {
-  max-width: 1140px;
-  margin: auto;
   font-family: "Work Sans";
   font-size: 14px;
 }
 
+main {
+  max-width: 1140px;
+  margin: auto;
+}
+
 header {
+  max-width: 1140px;
   display: flex;
   justify-content: space-between;
-  margin: 50px 0;
+  margin: auto;
+  margin-top: 38px;
+  margin-bottom: 92;
 }
 
 section {
@@ -379,14 +385,12 @@ footer nav ul {
 }
 
 .edit-banner {
+  /* margin-top: 100px; */
+
   height: 60px;
   background: black;
   width: 100vw;
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   gap: 30px;
@@ -407,14 +411,6 @@ footer nav ul {
   justify-content: center;
   padding: 0 20px;
   font-weight: 600;
-}
-
-.opacity {
-  opacity: 1;
-}
-
-.margin-top {
-  margin-top: 100px;
 }
 
 /* MODAL */
