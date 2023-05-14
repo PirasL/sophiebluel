@@ -1,15 +1,14 @@
 let gallery = document.querySelector(".gallery");
-let isLoggedIn = false;
+
 let loginSwitch = document.querySelector("#logSwitch");
 let data = [];
+
 // Is the user logged in ??
 if (document.cookie) {
-  isLoggedIn = true;
   document.querySelector("header").classList.add("margin-top");
   document.querySelector(".edit-banner").classList.add("opacity");
-  loginSwitch.innerHTML = `<a>logout</a>`;
+  loginSwitch.innerHTML = `<a class="">logout</a>`;
   loginSwitch.onclick = () => {
-    console.log(document.cookie);
     document.cookie = "access_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     window.location.reload();
   };
