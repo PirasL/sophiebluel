@@ -248,7 +248,7 @@ header li a {
   font-size: 16px;
   font-weight: bold;
   font-family: "Syne";
-  pointer: cursor;
+  cursor: pointer;
 }
 
 .filter-active {
