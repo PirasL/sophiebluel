@@ -176,7 +176,7 @@ function addItemToDb() {
         <select name="category" id='categoryInput' class="modal-form-input"></select>
       </div>
       <hr />
-      <button class="modal-form-submit">Valider</button>
+      <button class="modal-form-submit" disabled>Valider</button>
     </form>`;
 
   modalContainer.innerHTML = form;
@@ -204,34 +204,45 @@ function addItemToDb() {
 
   imageInput.onchange = () => {
     const [file] = imageInput.files;
-
     if (file) {
       imagePreviewContainer.innerHTML = `<img class="img-preview" src="${URL.createObjectURL(
         file
       )}"></img>`;
     }
-
-    // SEND IMAGE TO DB
-    submitImageBtn.setAttribute("style", "background: green");
-
-    submitImageBtn.onclick = (e) => {
-      const fd = new FormData();
-      fd.append("image", imageInput.files[0]);
-      fd.append("title", imageTitle.value);
-      fd.append("category", imageCategoryInput.value);
-      e.preventDefault();
-      fetch("http://localhost:5678/api/works", {
-        method: "post",
-        body: fd,
-        headers: {
-          Authorization: "Bearer " + document.cookie.split("=")[1],
-        },
-      })
-        .then((res) => console.log(res.status))
-        .catch((error) => console.log(error));
-    };
+    checkFiles();
   };
 
+  imageTitle.onchange = () => checkFiles();
+  imageCategoryInput.onchange = () => checkFiles();
+  // SEND IMAGE TO DB
+  // if (imageInput.files[0] && imageTitle.value && imageCategoryInput.value) {
+  //   submitImageBtn.setAttribute("style", "background: green");
+  //   console.log("hey");
+  // }
+
+  function checkFiles() {
+    if (imageInput.files[0] && imageTitle.value && imageCategoryInput.value) {
+      submitImageBtn.setAttribute("style", "background: green");
+      submitImageBtn.disabled = false;
+    }
+  }
+
+  submitImageBtn.onclick = (e) => {
+    const fd = new FormData();
+    fd.append("image", imageInput.files[0]);
+    fd.append("title", imageTitle.value);
+    fd.append("category", imageCategoryInput.value);
+    e.preventDefault();
+    fetch("http://localhost:5678/api/works", {
+      method: "post",
+      body: fd,
+      headers: {
+        Authorization: "Bearer " + document.cookie.split("=")[1],
+      },
+    })
+      .then((res) => console.log(res.status))
+      .catch((error) => console.log(error));
+  };
   let naviguateBack = document.querySelector("#navArrow");
   naviguateBack.onclick = () => {
     modalContainer.innerHTML = `  <div>
