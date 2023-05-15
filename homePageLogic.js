@@ -185,15 +185,6 @@ function addItemToDb() {
   let imageCategoryInput = document.querySelector("#categoryInput");
   let imagePreviewContainer = document.querySelector(".modal-add-pic");
 
-  // Build options Input category
-
-  // let categories = [...new Set(data.map(({ category }) => category))];
-  // console.log(categories);
-  // const map = {};
-  // for (const element of categories) {
-  //   map[element.id] = element;
-  // }
-
   fetch("http://localhost:5678/api/categories")
     .then((res) => res.json())
     .then((categories) => {
@@ -237,10 +228,9 @@ function addItemToDb() {
       headers: {
         Authorization: "Bearer " + document.cookie.split("=")[1],
       },
-    })
-      .then((res) => console.log(res.status))
-      .catch((error) => console.log(error));
+    }).catch((error) => console.log(error));
   };
+
   let naviguateBack = document.querySelector("#navArrow");
   naviguateBack.onclick = () => {
     modalContainer.innerHTML = `  <div>

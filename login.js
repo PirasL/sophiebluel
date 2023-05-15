@@ -17,7 +17,7 @@ form.addEventListener("submit", async (e) => {
     },
     body: JSON.stringify(user),
   });
-  console.log(response);
+
   if (response.ok) {
     let result = await response.json();
     document.cookie = `access_token=${result.token}`;
