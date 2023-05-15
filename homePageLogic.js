@@ -148,9 +148,7 @@ function deleteItemFromDb(id) {
     headers: {
       Authorization: "Bearer " + document.cookie.split("=")[1],
     },
-  })
-    .then((res) => console.log(res.status))
-    .catch((error) => console.log(error));
+  }).catch((error) => console.log(error));
 }
 
 let modalContainer = document.querySelector(".modal-container");
@@ -180,6 +178,7 @@ function addItemToDb() {
     </form>`;
 
   modalContainer.innerHTML = form;
+
   let submitImageBtn = document.querySelector(".modal-form-submit");
   let imageInput = document.querySelector(".input-file");
   let imageTitle = document.querySelector("#titleInput");
@@ -188,19 +187,26 @@ function addItemToDb() {
 
   // Build options Input category
 
-  let categories = [...new Set(data.map(({ category }) => category))];
-  const map = {};
-  for (const element of categories) {
-    map[element.id] = element;
-  }
-  const uniqueCategories = Object.values(map);
+  // let categories = [...new Set(data.map(({ category }) => category))];
+  // console.log(categories);
+  // const map = {};
+  // for (const element of categories) {
+  //   map[element.id] = element;
+  // }
+  let categories = [];
+  fetch("http://localhost:5678/api/categories")
+    .then((res) => res.json())
+    .then((categories) => {
+      // const uniqueCategories = Object.values(map);
+      // console.log(uniqueCategories);
 
-  uniqueCategories.forEach((item, index) => {
-    let inputOption = document.createElement("option");
-    inputOption.value = item.id;
-    inputOption.innerText = item.name;
-    imageCategoryInput.append(inputOption);
-  });
+      categories.forEach((item, index) => {
+        let inputOption = document.createElement("option");
+        inputOption.value = item.id;
+        inputOption.innerText = item.name;
+        imageCategoryInput.append(inputOption);
+      });
+    });
 
   imageInput.onchange = () => {
     const [file] = imageInput.files;
@@ -214,11 +220,6 @@ function addItemToDb() {
 
   imageTitle.onchange = () => checkFiles();
   imageCategoryInput.onchange = () => checkFiles();
-  // SEND IMAGE TO DB
-  // if (imageInput.files[0] && imageTitle.value && imageCategoryInput.value) {
-  //   submitImageBtn.setAttribute("style", "background: green");
-  //   console.log("hey");
-  // }
 
   function checkFiles() {
     if (imageInput.files[0] && imageTitle.value && imageCategoryInput.value) {
