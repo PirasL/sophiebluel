@@ -164,12 +164,12 @@ function addItemToDb() {
       <div class="modal-add-pic">
         <img id='img-preview' src="./assets/images/image.svg" class="modal-svg" alt="" />
         <label class="input-file-label" for="file">+ Ajouter photo</label>
-        <input type="file" id="file" class="input-file" accept="image/png, image/jpg" >
+        <input type="file" id="file" class="input-file" name="file" accept="image/png, image/jpg" >
         <p>jpg, png : 4mo max</p>
       </div>
       <div class="modal-form-input-container">
         <label for="title" class="modal-form-input-label">Titre</label>
-        <input name="title" id='titleInput' class="modal-form-input" type="text" />
+        <input name="title" name="title" id='titleInput' class="modal-form-input" type="text" />
         <label for="category" class="modal-form-input-label">Catégorie</label>
         <select name="category" id='categoryInput' class="modal-form-input"></select>
       </div>
@@ -193,13 +193,10 @@ function addItemToDb() {
   // for (const element of categories) {
   //   map[element.id] = element;
   // }
-  let categories = [];
+
   fetch("http://localhost:5678/api/categories")
     .then((res) => res.json())
     .then((categories) => {
-      // const uniqueCategories = Object.values(map);
-      // console.log(uniqueCategories);
-
       categories.forEach((item, index) => {
         let inputOption = document.createElement("option");
         inputOption.value = item.id;
