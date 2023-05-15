@@ -160,7 +160,7 @@ function addItemToDb() {
     <form class="modal-form">
       <div class="modal-nav-icon">
         <i class="fa-solid fa-arrow-left fa-2x" id="navArrow"></i>
-        <i class="fa-solid fa-xmark fa-2x"></i>
+        <i class="fa-solid fa-xmark fa-2x" id='close-button'></i>
       </div>
       <p class="modal-form-title">Ajout photo</p>
       <div class="modal-add-pic">
@@ -189,7 +189,6 @@ function addItemToDb() {
   // Build options Input category
 
   let categories = [...new Set(data.map(({ category }) => category))];
-  console.log(categories);
   const map = {};
   for (const element of categories) {
     map[element.id] = element;
@@ -207,7 +206,6 @@ function addItemToDb() {
     const [file] = imageInput.files;
 
     if (file) {
-      console.log(file);
       imagePreviewContainer.innerHTML = `<img class="img-preview" src="${URL.createObjectURL(
         file
       )}"></img>`;
@@ -217,7 +215,6 @@ function addItemToDb() {
     submitImageBtn.setAttribute("style", "background: green");
 
     submitImageBtn.onclick = (e) => {
-      console.log(imageTitle);
       const fd = new FormData();
       fd.append("image", imageInput.files[0]);
       fd.append("title", imageTitle.value);
@@ -250,4 +247,7 @@ function addItemToDb() {
             </div>`;
     buildModalGallery(data);
   };
+
+  let xmark = document.querySelector(".fa-xmark");
+  xmark.onclick = () => closeModal();
 }

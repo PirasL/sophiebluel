@@ -606,6 +606,7 @@ hr {
   border-radius: 60px;
   color: white;
   font-family: "syne";
+  pointer: cursor;
 }
 
 .login-error-msg {
