@@ -455,6 +455,10 @@ hr {
   justify-content: end;
 }
 
+.fa-solid {
+  cursor: pointer;
+}
+
 .modal-gallery {
   display: grid;
   grid-template-columns: repeat(5, 1fr);

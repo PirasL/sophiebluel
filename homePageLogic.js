@@ -232,7 +232,7 @@ function addItemToDb() {
     checkFiles();
   };
 
-  imageTitle.onchange = () => checkFiles();
+  imageTitle.onkeydown = () => checkFiles();
   imageCategoryInput.onchange = () => checkFiles();
 
   function checkFiles() {
@@ -282,7 +282,8 @@ function addItemToDb() {
     buildModalGallery(data);
     if (
       document.querySelector(".filter-active").innerText ===
-      imageCategoryInput[res.categoryId - 1].innerText
+        imageCategoryInput[res.categoryId - 1].innerText ||
+      "Tous"
     ) {
       let figure = document.createElement("figure");
       figure.id = "img-id" + res.id;
