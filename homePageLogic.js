@@ -1,36 +1,39 @@
 let gallery = document.querySelector(".gallery");
 let loginSwitch = document.querySelector("#logSwitch");
 let data = [];
+let newData = [];
 
 // Is the user logged in ??
-if (document.cookie) {
+if (window.localStorage.getItem("access_token")) {
   document.querySelector(".edit-banner").style.display = "flex";
   loginSwitch.innerHTML = `<a>logout</a>`;
   loginSwitch.onclick = () => {
-    document.cookie = "access_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    window.localStorage.removeItem("access_token");
     window.location.reload();
   };
 }
 
 // FETCH DATA
-fetch("http://localhost:5678/api/works")
-  .then((response) => response.json())
-  .then((responseData) => {
-    const uniqueCategories = [
-      ...new Set(responseData.map(({ category }) => category.name)),
-    ];
-    buildFilter(uniqueCategories, responseData);
-    buildGallery(responseData);
-    buildModalGallery(responseData);
-    data = responseData;
-  })
-  .catch((error) => console.warn(error));
+
+Promise.all([
+  fetch("http://localhost:5678/api/works").then((res) => res.json()),
+  fetch("http://localhost:5678/api/categories").then((res) => res.json()),
+]).then((res) => {
+  buildFilter(res[1], res[0]);
+  buildGallery(res[0]);
+  buildModalGallery(res[0]);
+  data = res[0];
+});
 
 //BUILD GALLERY
 function buildGallery(responseData) {
+  if (gallery.firstChild) {
+    removeItem();
+  }
   responseData.forEach((item) => {
     // Create figure
     let figure = document.createElement("figure");
+    figure.id = "img-id" + item.id;
 
     // create image
     let itemImg = document.createElement("img");
@@ -53,7 +56,7 @@ const filterContainer = document.querySelector(".filter-container");
 function buildFilter(categories, responseData) {
   categories.forEach((el) => {
     let categoryFilterItem = document.createElement("div");
-    categoryFilterItem.innerText = el;
+    categoryFilterItem.innerText = el.name;
     categoryFilterItem.className = "filter-item";
     filterContainer.appendChild(categoryFilterItem);
   });
@@ -65,6 +68,7 @@ function buildFilter(categories, responseData) {
       itemFilter.forEach((el) => el.classList.remove("filter-active"));
       e.target.classList.add("filter-active");
       const target = e.target.innerText;
+
       if (target === "Tous") {
         removeItem();
         buildGallery(responseData);
@@ -72,6 +76,7 @@ function buildFilter(categories, responseData) {
         let filteredData = responseData.filter(
           ({ category }) => category.name === target
         );
+
         removeItem();
         buildGallery(filteredData);
       }
@@ -110,15 +115,13 @@ const b = document.querySelector(".modal").addEventListener("click", (e) => {
 });
 
 // DISPLAY GALLERY INSIDE MODAL
-
+const modalGallery = document.querySelector(".modal-gallery");
 function buildModalGallery(responseData) {
-  let modalGallery = document.querySelector(".modal-gallery");
   responseData.forEach((el) => {
     // create container
-
     let modalGalleryItem = document.createElement("div");
     modalGalleryItem.className = "modal-gallery-item";
-
+    modalGalleryItem.id = "img-id" + el.id;
     // create img
     let modalImg = document.createElement("img");
     modalImg.src = el.imageUrl;
@@ -134,24 +137,32 @@ function buildModalGallery(responseData) {
       deleteItemFromDb(e.target.parentNode.id);
     });
 
+    // edit button
+    let editButton = document.createElement("span");
+    editButton.innerText = "éditer";
     // append
-
+    let modalGallery = document.querySelector(".modal-gallery");
     modalGallery.append(modalGalleryItem);
     modalGalleryItem.append(modalImg);
     modalGalleryItem.append(trashIconContainer);
+    modalGalleryItem.append(editButton);
   });
 }
+let modalContainer = document.querySelector(".modal-container");
 
-function deleteItemFromDb(id) {
+function deleteItemFromDb(id, index) {
   fetch("http://localhost:5678/api/works/" + id, {
     method: "delete",
     headers: {
-      Authorization: "Bearer " + document.cookie.split("=")[1],
+      Authorization: "Bearer " + localStorage.getItem("access_token"),
     },
-  }).catch((error) => console.log(error));
+  }).then(() => {
+    const imgToDelete = document.querySelectorAll("#img-id" + id);
+    imgToDelete.forEach((el) => {
+      el.remove();
+    });
+  });
 }
-
-let modalContainer = document.querySelector(".modal-container");
 
 function addItemToDb() {
   let form = `
@@ -188,7 +199,7 @@ function addItemToDb() {
   fetch("http://localhost:5678/api/categories")
     .then((res) => res.json())
     .then((categories) => {
-      categories.forEach((item, index) => {
+      categories.forEach((item) => {
         let inputOption = document.createElement("option");
         inputOption.value = item.id;
         inputOption.innerText = item.name;
@@ -216,19 +227,41 @@ function addItemToDb() {
     }
   }
 
-  submitImageBtn.onclick = (e) => {
+  submitImageBtn.onclick = async (e) => {
+    e.preventDefault();
     const fd = new FormData();
     fd.append("image", imageInput.files[0]);
     fd.append("title", imageTitle.value);
     fd.append("category", imageCategoryInput.value);
-    e.preventDefault();
-    fetch("http://localhost:5678/api/works", {
+
+    const request = await fetch("http://localhost:5678/api/works", {
       method: "post",
       body: fd,
       headers: {
-        Authorization: "Bearer " + document.cookie.split("=")[1],
+        Authorization: "Bearer " + localStorage.getItem("access_token"),
       },
-    }).catch((error) => console.log(error));
+    });
+    const res = await request.json();
+    modalContainer.innerHTML = `  <div>
+            <p class="modal-gallery-title">Galerie photo</p>
+            <div class="modal-gallery"></div>
+          </div>
+          <div class="modal-btn-container">
+            <hr />
+            <button class="modal-button" onclick="addItemToDb()">
+              Ajouter une photo
+            </button>
+            <a class="modal-delete">Supprimer la galerie</a>
+          </div>`;
+    data.push({
+      categoryId: res.categoryId,
+      id: res.id,
+      imageUrl: res.imageUrl,
+      title: res.title,
+      userId: res.userId,
+    });
+    buildModalGallery(data);
+    buildGallery(data);
   };
 
   let naviguateBack = document.querySelector("#navArrow");
@@ -245,6 +278,7 @@ function addItemToDb() {
               <a class="modal-delete">Supprimer la galerie</a>
             </div>`;
     buildModalGallery(data);
+    buildGallery(data);
   };
 
   let xmark = document.querySelector(".fa-xmark");

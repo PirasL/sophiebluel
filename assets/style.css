@@ -453,6 +453,7 @@ hr {
 .modal-gallery {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+
   gap: 5px;
   object-fit: cover;
   width: auto;
@@ -477,12 +478,14 @@ hr {
 }
 
 .modal-img {
-  height: 100%;
+  height: auto%;
   width: 100%;
 }
 
 .modal-gallery-item {
   position: relative;
+  height: auto;
+  font-size: 12px;
 }
 
 .modal-img-delete {

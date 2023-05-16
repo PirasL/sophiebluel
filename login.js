@@ -20,8 +20,9 @@ form.addEventListener("submit", async (e) => {
 
   if (response.ok) {
     let result = await response.json();
-    document.cookie = `access_token=${result.token}`;
-    window.location.href = "/client/index.html";
+    // document.cookie = `access_token=${result.token}`;
+    window.localStorage.setItem("access_token", `${result.token}`);
+    window.location.href = "./index.html";
   } else {
     if (document.querySelector("#errorMsg")) return;
     let errorMsg = document.createElement("div");
