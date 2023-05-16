@@ -400,7 +400,6 @@ footer nav ul {
 
 .edit-button {
   color: white;
-  cursor: pointer;
 }
 
 .publish {
@@ -448,6 +447,11 @@ hr {
   border: none;
   border-top: 1px solid #b3b3b3;
   width: 100%;
+}
+
+.close-modal {
+  display: flex;
+  justify-content: end;
 }
 
 .modal-gallery {
@@ -499,10 +503,12 @@ hr {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .fa-trash-can {
   color: white;
+  pointer-events: none;
 }
 
 .modal-btn-container {
@@ -520,6 +526,7 @@ hr {
   background: #1d6154;
   border: none;
   border-radius: 20px;
+  cursor: pointer;
 }
 
 .modal-delete {
@@ -579,6 +586,7 @@ hr {
   justify-content: center;
   color: #306685;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .modal-form-input-container {

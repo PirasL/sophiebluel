@@ -19,14 +19,15 @@ Promise.all([
   fetch("http://localhost:5678/api/works").then((res) => res.json()),
   fetch("http://localhost:5678/api/categories").then((res) => res.json()),
 ]).then((res) => {
-  buildFilter(res[1], res[0]);
+  data = res[0];
+  buildFilter(res[1]);
   buildGallery(res[0]);
   buildModalGallery(res[0]);
-  data = res[0];
 });
 
 //BUILD GALLERY
 function buildGallery(responseData) {
+  console.log(responseData);
   if (gallery.firstChild) {
     removeItem();
   }
@@ -53,7 +54,7 @@ function buildGallery(responseData) {
 
 // BUILD FILTER
 const filterContainer = document.querySelector(".filter-container");
-function buildFilter(categories, responseData) {
+function buildFilter(categories) {
   categories.forEach((el) => {
     let categoryFilterItem = document.createElement("div");
     categoryFilterItem.innerText = el.name;
@@ -71,12 +72,11 @@ function buildFilter(categories, responseData) {
 
       if (target === "Tous") {
         removeItem();
-        buildGallery(responseData);
+        buildGallery(data);
       } else {
-        let filteredData = responseData.filter(
+        let filteredData = data.filter(
           ({ category }) => category.name === target
         );
-
         removeItem();
         buildGallery(filteredData);
       }
@@ -99,6 +99,21 @@ function showModal() {
 
 function closeModal() {
   modal.style.display = "none";
+  modalContainer.innerHTML = `<div>
+  <div class="close-modal">
+                <i class="fa-solid fa-xmark fa-2x" onclick="closeModal()"></i>
+              </div>
+              <p class="modal-gallery-title">Galerie photo</p>
+              <div class="modal-gallery"></div>
+            </div>
+            <div class="modal-btn-container">
+              <hr />
+              <button class="modal-button" onclick="addItemToDb()">
+                Ajouter une photo
+              </button>
+              <a class="modal-delete">Supprimer la galerie</a>
+            </div>`;
+  buildModalGallery(data);
 }
 
 const editMode = document.querySelector("#display-modal");
@@ -130,11 +145,11 @@ function buildModalGallery(responseData) {
 
     // create deleteButton
     let trashIconContainer = document.createElement("div");
-    trashIconContainer.id = el.id;
+    trashIconContainer.dataset.id = el.id;
     trashIconContainer.className = "modal-img-delete";
     trashIconContainer.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
     trashIconContainer.addEventListener("click", (e) => {
-      deleteItemFromDb(e.target.parentNode.id);
+      deleteItemFromDb(e.target.dataset.id);
     });
 
     // edit button
@@ -150,7 +165,7 @@ function buildModalGallery(responseData) {
 }
 let modalContainer = document.querySelector(".modal-container");
 
-function deleteItemFromDb(id, index) {
+function deleteItemFromDb(id) {
   fetch("http://localhost:5678/api/works/" + id, {
     method: "delete",
     headers: {
@@ -161,6 +176,7 @@ function deleteItemFromDb(id, index) {
     imgToDelete.forEach((el) => {
       el.remove();
     });
+    data = data.filter((obj) => obj.id !== parseInt(id));
   });
 }
 
@@ -254,6 +270,10 @@ function addItemToDb() {
             <a class="modal-delete">Supprimer la galerie</a>
           </div>`;
     data.push({
+      category: {
+        id: res.categoryId,
+        name: imageCategoryInput[res.categoryId - 1].innerText,
+      },
       categoryId: res.categoryId,
       id: res.id,
       imageUrl: res.imageUrl,
@@ -261,7 +281,24 @@ function addItemToDb() {
       userId: res.userId,
     });
     buildModalGallery(data);
-    buildGallery(data);
+    console.log(data);
+
+    let figure = document.createElement("figure");
+    figure.id = "img-id" + res.id;
+
+    // create image
+    let itemImg = document.createElement("img");
+    itemImg.crossOrigin = "anonymous";
+    itemImg.src = res.imageUrl;
+
+    // create figcaption
+    let itemFigcaption = document.createElement("figcaption");
+    itemFigcaption.innerText = res.title;
+
+    // append figure + text and img
+    gallery.appendChild(figure);
+    figure.appendChild(itemImg);
+    figure.appendChild(itemFigcaption);
   };
 
   let naviguateBack = document.querySelector("#navArrow");
