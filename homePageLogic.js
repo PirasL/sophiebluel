@@ -27,7 +27,6 @@ Promise.all([
 
 //BUILD GALLERY
 function buildGallery(responseData) {
-  console.log(responseData);
   if (gallery.firstChild) {
     removeItem();
   }
