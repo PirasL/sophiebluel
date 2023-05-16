@@ -281,24 +281,27 @@ function addItemToDb() {
       userId: res.userId,
     });
     buildModalGallery(data);
-    console.log(data);
+    if (
+      document.querySelector(".filter-active").innerText ===
+      imageCategoryInput[res.categoryId - 1].innerText
+    ) {
+      let figure = document.createElement("figure");
+      figure.id = "img-id" + res.id;
 
-    let figure = document.createElement("figure");
-    figure.id = "img-id" + res.id;
+      // create image
+      let itemImg = document.createElement("img");
+      itemImg.crossOrigin = "anonymous";
+      itemImg.src = res.imageUrl;
 
-    // create image
-    let itemImg = document.createElement("img");
-    itemImg.crossOrigin = "anonymous";
-    itemImg.src = res.imageUrl;
+      // create figcaption
+      let itemFigcaption = document.createElement("figcaption");
+      itemFigcaption.innerText = res.title;
 
-    // create figcaption
-    let itemFigcaption = document.createElement("figcaption");
-    itemFigcaption.innerText = res.title;
-
-    // append figure + text and img
-    gallery.appendChild(figure);
-    figure.appendChild(itemImg);
-    figure.appendChild(itemFigcaption);
+      // append figure + text and img
+      gallery.appendChild(figure);
+      figure.appendChild(itemImg);
+      figure.appendChild(itemFigcaption);
+    }
   };
 
   let naviguateBack = document.querySelector("#navArrow");
